@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
     <link rel="stylesheet" href="css/reveal.min.css">
-    <link rel="stylesheet" href="css/mentoring/source/mentoring.css" id="theme">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
 
     <!-- For syntax highlighting -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
@@ -37,7 +37,7 @@
 <section class="slides">
 <section>
     <h2>Make a deep breath, and jump to Drupal 8</h2>
-    <h3><a href="http://tinyurl.com/behathow">tinyurl.com/behathow</a></h3>
+    <h3><a href="https://tinyurl.com/drupal72d8">tinyurl.com/drupal72d8</a></h3>
     <br/>
   <aside class="notes">
     <p>
@@ -45,20 +45,6 @@
     </p>
   </aside>
 </section>
-
-    <section>
-        <h4>Highly anticipated</h4>
-
-        <aside class="notes">
-            <p>
-                White box - we know internal design of the system under test
-                Box - we don't know internal design
-                Grey box is when we know (at least partially) software design,
-                but run tests as af it's a black box
-            </p>
-
-        </aside>
-    </section>
 
     <section>
     <h2>It's not too late</h2>
@@ -73,13 +59,36 @@
         5 - 1.0%
         8 - 0.9%
     </p>
+    <p>So why are people so thursty about Drupal 8?</p>
   </aside>
 </section>
 
     <section>
+        <h3>Highly anticipated</h3>
+
+        <ul>
+          <li>5 years in development</li>
+          <li>Over 3000 people</li>
+          <li>Tons of improvements</li>
+          <li>New development is done with long term in mind</li>
+        </ul>
+
+        <aside class="notes">
+            <p>
+              Mobile first
+              REST API
+              Editor experience
+              Symfony components
+              But since you are here, I guess you don't need to be convinced
+            </p>
+
+        </aside>
+    </section>
+
+    <section>
         <h3>What has changed</h3>
 
-        <h5 class="fragment grow">(Hint: everything)</h5>
+        <h5 class="fragment grow highlight-red">(Hint: everything)</h5>
 
         <ul>
             <li>Module system (hooks)</li>
@@ -99,46 +108,22 @@
         </aside>
     </section>
 
-    <section>
-        <h3>What has changed</h3>
+  <section>
+    <h3>What has changed</h3>
 
-        <h4>General changes</h4>
+    <h4>General changes</h4>
 
-        <ul>
-            <li class="fragment">Much more object oriented</li>
-            <li class="fragment">Drupal-specific programming patterns replaced
-                <ul>
-                    <li>Hooks (mostly for altering)</li>
-                    <li>Entity API++</li>
-                    <li>Plugins</li>
-                    <li>Services</li>
-                    <li>Event subscribers</li>
-                </ul>
-            </li>
-            <li class="fragment">Pluggable everything</li>
-        </ul>
-        <aside class="notes">
-            <p>Concept of hooks as universal discovery mechanism is gradually replaced by different patterns,
-            depending on type of objects being discovered</p>
-        </aside>
-    </section>
-
-    <section>
-        <h3>What has changed</h3>
-
-        <h4>General changes (continued)</h4>
-
-        <ul>
-            <li>YAML for all static configuration</li>
-            <li>
+    <ul>
+      <li>YAML for all static configuration</li>
+      <li>
                 <span class="fragment fade-out" style="position:absolute">
                 modulename.info<br/>
                 themename.info</span>
                 <span class="fragment fade-in" style="position:absolute;color:green">
                 modulename.info.yml<br/>
                 themename.info.yml</span>
-            </li>
-        </ul>
+      </li>
+    </ul>
         <pre class="fragment" style="margin-top: 50px">
     name: System
     type: module
@@ -150,13 +135,44 @@
     configure: system.admin_config_system
         </pre>
 
+    <aside class="notes">
+      <p>No more .info files. They are renamed to .info.yml
+        Take note on configure link, it gives a hint about the new menu system,
+        that we will discuss later</p>
+      <p>Not only .info files replaced with YML, but also many other things:
+        info hooks (hook_entity_info, hook_schema), exportable features</p>
+      </p>
+    </aside>
+  </section>
+
+  <section>
+        <h3>What has changed</h3>
+
+        <h4>General changes (continued)</h4>
+
+        <ul>
+            <li class="fragment">Much more object oriented</li>
+            <li class="fragment">Drupal-specific programming patterns replaced
+                <ul>
+                    <li>Hooks</li>
+                    <li>Entity API++</li>
+                    <li>Plugins</li>
+                    <li>Services</li>
+                    <li>Event subscribers</li>
+                </ul>
+            </li>
+            <li class="fragment">Pluggable everything</li>
+        </ul>
         <aside class="notes">
-            <p>No more .info files. They are renamed to .info.yml
-                Take note on configure link, it gives a hint about the new menu system,
-                that we will discuss later</p>
-            <p>Not only .info files replaced with YML, but also many other things:
-             info hooks (hook_entity_info, hook_schema), exportable features</p>
-            </p>
+          <p>Many global functions are now static functions of \Drupal class</p>
+          <p>Concept of hooks as universal discovery mechanism is gradually replaced by different patterns,
+            depending on type of objects being discovered</p>
+          <p>Hooks are using mostly for altering, because alternatives are resource-hungry </p>
+          <p>Entity API from contrib entity module is now part of the core, and got steroids. Entity metadata is stored in YML files instead of hook_entity_info()</p>
+          <p>Plugins are used when we need to extend known type of functionality, i.e. cache plugins, block plugins, field type plugins</p>
+          <p>Services are used to expose pluggable *new* type of functionality</p>
+          <p>Event subscribers replace hook_entity_update(), hook_page_view etc.</p>
+          <p>Pluggable architecture makes testing easier</p>
         </aside>
     </section>
 
@@ -213,15 +229,52 @@
         </aside>
     </section>
 
+  <section>
+    <h3>Menu system</h3>
+
+    <h4>views.routing.yml</h4>
+    <h5><pre>
+    views.ajax:
+      path: '/views/ajax'
+      defaults:
+        _controller: '\Drupal\views\Controller\ViewAjaxController::ajaxView'
+      options:
+        _theme: ajax_base_page
+      requirements:
+        _access: 'TRUE'
+
+    route_callbacks:
+      <span class="fragment highlight-green"> - 'views.route_subscriber:routes'</span>
+      </pre>
+    </h5>
+
+    <div class="fragment">
+      <h5>views.services.yml</h5>
+        <pre><code>
+    views.route_subscriber:
+    class: Drupal\views\EventSubscriber\RouteSubscriber
+    arguments: ['@entity.manager', '@state']
+    tags:
+      - { name: 'event_subscriber' }
+
+        </code></pre>
+    </div>
+
+    <aside class="notes">
+      <p>https://www.drupal.org/node/2118147 Porting hook_menu from D7 to D8</p>
+      <p>Routing is based on Symfony HttpKernel component</p>
+      <p>No more drupal_add_js() and drupal_add_css()</p>
+      <p>#attached property was introduced in Drupal 7, and has become the only way of adding assets in D8</p>
+      <p>render arrays are there too, but improved in many ways, most notably #cache property</p>
+    </aside>
+  </section>
+
     <section>
         <h3>Form generation</h3>
 
         <h4 class="fragment highlight-blue">Moderate changes</h4>
 
-        <ul>
-            <li>Single form - class implementing FormInterface</li>
-            <li>hook_forms() not needed</li>
-            <li><pre><code class="hljs php">
+  <pre><code class="hljs php">
 class FooForm implements FormInterface {
 
   protected $type;
@@ -233,6 +286,10 @@ class FooForm implements FormInterface {
   public function getFormId() {
     return 'foo_' . $this->type . '_form';
   }
+
+  public function buildForm(array $form, FormStateInterface $form_state) {...}
+  public function validateForm(array $form, FormStateInterface $form_state) {...}
+  public function submitForm(array $form, FormStateInterface $form_state) {...}
 }
 
 class FooRouteController {
@@ -243,12 +300,10 @@ class FooRouteController {
  }
 }
             </code></pre>
-            </li>
-
-        </ul>
 
         <aside class="notes">
-            <p>https://www.drupal.org/node/2118147 Porting hook_menu from D7 to D8</p>
+          <li>Single form - class implementing FormInterface</li>
+          <li>hook_forms() not needed</li>
             <p>No more drupal_add_js() and drupal_add_css()</p>
             <p>#attached property was introduced in Drupal 7, and has become the only way of adding assets in D8</p>
             <p>render arrays are there too, but improved in many ways, most notably #cache property</p>
@@ -298,10 +353,33 @@ class FooRouteController {
 $user = \Drupal::currentUser();
 $language = \Drupal::languageManager()->getCurrentLanguage();
 $language_default = \Drupal::languageManager()->getDefaultLanguage();
+variable_get = ???
         </code></pre>
 
         <aside class="notes"></aside>
     </section>
+
+  <section>
+    <h3>New developer tools</h3>
+
+    <ul>
+      <li>Console https://drupalconsole.com/</li>
+      <li>Web profiler (merged with devel)</li>
+      <li>drush</li>
+    </ul>
+
+    <aside class="notes">
+      Drupal console is built on top of Symfony console, no drush legacy to support older cores
+      Co-maintained by Jesus Manuel Olivas from FFW
+      Generates boiler plate code in addition to what you would expect from drush
+
+      Web profiler
+    </aside>
+  </section>
+
+  <section>
+    <h3>Questions?</h3>
+  </section>
 
 </div>
 
