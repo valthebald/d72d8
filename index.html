@@ -77,21 +77,16 @@
 </section>
 
     <section>
-        <h4>What has changed</h4>
+        <h3>What has changed</h3>
 
-        <h5>(Hint: everything)</h5>
+        <h5 class="fragment grow">(Hint: everything)</h5>
 
         <ul>
             <li>Module system (hooks)</li>
             <li>Database abstraction</li>
             <li>Menu system</li>
             <li>Form generation</li>
-            <li>File uploads</li>
-            <li>Field API</li>
-            <li>Search</li>
-            <li>Node access</li>
             <li>Theme system</li>
-            <li>Constants</li>
             <li>Global variables</li>
         </ul>
 
@@ -104,6 +99,209 @@
         </aside>
     </section>
 
+    <section>
+        <h3>What has changed</h3>
+
+        <h4>General changes</h4>
+
+        <ul>
+            <li class="fragment">Much more object oriented</li>
+            <li class="fragment">Drupal-specific programming patterns replaced
+                <ul>
+                    <li>Hooks (mostly for altering)</li>
+                    <li>Entity API++</li>
+                    <li>Plugins</li>
+                    <li>Services</li>
+                    <li>Event subscribers</li>
+                </ul>
+            </li>
+            <li class="fragment">Pluggable everything</li>
+        </ul>
+        <aside class="notes">
+            <p>Concept of hooks as universal discovery mechanism is gradually replaced by different patterns,
+            depending on type of objects being discovered</p>
+        </aside>
+    </section>
+
+    <section>
+        <h3>What has changed</h3>
+
+        <h4>General changes (continued)</h4>
+
+        <ul>
+            <li>YAML for all static configuration</li>
+            <li>
+                <span class="fragment fade-out" style="position:absolute">
+                modulename.info<br/>
+                themename.info</span>
+                <span class="fragment fade-in" style="position:absolute;color:green">
+                modulename.info.yml<br/>
+                themename.info.yml</span>
+            </li>
+        </ul>
+        <pre class="fragment" style="margin-top: 50px">
+    name: System
+    type: module
+    description: 'Handles general site configuration for administrators.'
+    package: Core
+    version: VERSION
+    core: 8.x
+    required: true
+    configure: system.admin_config_system
+        </pre>
+
+        <aside class="notes">
+            <p>No more .info files. They are renamed to .info.yml
+                Take note on configure link, it gives a hint about the new menu system,
+                that we will discuss later</p>
+            <p>Not only .info files replaced with YML, but also many other things:
+             info hooks (hook_entity_info, hook_schema), exportable features</p>
+            </p>
+        </aside>
+    </section>
+
+    <section>
+        <h3>Module system</h3>
+
+        <h4 class="fragment highlight-blue">Moderate changes</h4>
+
+        <ul>
+            <li>Drupal 7 => Drupal 8</li>
+            <li>module_invoke('module', 'hook_name') =>
+                <span class="fragment highlight-green">\Drupal::moduleHandler()->invoke('module', 'hook_name')</span>
+            </li>
+            <li>module_invoke_all('hook_name') =>
+                <span class="fragment highlight-green">\Drupal::moduleHandler()->invokeAll('hook_name')</span>
+            </li>
+            <li>module_load_include('module', 'hook_name') =>
+                <span class="fragment highlight-green">\Drupal::moduleHandler()->loadInclude('module', 'hook_name')</span>
+            </li>
+            <li>drupal_alter('hook_name') =>
+                <span class="fragment highlight-green">\Drupal::moduleHandler()->alter('hook_name')</span>
+            </li>
+
+        </ul>
+
+        <aside class="notes">
+            <p>module_* family of functions, and drupal_alter() are now replaced by module handler service.
+            Must implement ModuleHandlerInterface</p>
+        </aside>
+    </section>
+
+    <section>
+        <h3>Database abstraction layer</h3>
+
+        <h4 class="fragment highlight-green">Minimal changes</h4>
+
+        <aside class="notes">Although there are new recommended ways to query databases, old good db_query, db_insert
+            will stay in Drupal until 9.0
+        </aside>
+    </section>
+
+    <section>
+        <h3>Menu system</h3>
+
+        <h4 class="fragment highlight-red">Changed completely</h4>
+
+        <img src="https://www.drupal.org/files/Drupal7MenuToDrupal8.png" alt="What happened to hook_menu"/>
+
+        <aside class="notes">
+            <p>https://www.drupal.org/node/2118147 Porting hook_menu from D7 to D8</p>
+            <p>No more drupal_add_js() and drupal_add_css()</p>
+            <p>#attached property was introduced in Drupal 7, and has become the only way of adding assets in D8</p>
+            <p>render arrays are there too, but improved in many ways, most notably #cache property</p>
+        </aside>
+    </section>
+
+    <section>
+        <h3>Form generation</h3>
+
+        <h4 class="fragment highlight-blue">Moderate changes</h4>
+
+        <ul>
+            <li>Single form - class implementing FormInterface</li>
+            <li>hook_forms() not needed</li>
+            <li><pre><code class="hljs php">
+class FooForm implements FormInterface {
+
+  protected $type;
+
+  public function __construct($type) {
+    $this->type = $type;
+  }
+
+  public function getFormId() {
+    return 'foo_' . $this->type . '_form';
+  }
+}
+
+class FooRouteController {
+ public function fooBarForm($type) {
+   $form = new FooForm('bar');
+
+   return \Drupal::formBuilder()->getForm($form);
+ }
+}
+            </code></pre>
+            </li>
+
+        </ul>
+
+        <aside class="notes">
+            <p>https://www.drupal.org/node/2118147 Porting hook_menu from D7 to D8</p>
+            <p>No more drupal_add_js() and drupal_add_css()</p>
+            <p>#attached property was introduced in Drupal 7, and has become the only way of adding assets in D8</p>
+            <p>render arrays are there too, but improved in many ways, most notably #cache property</p>
+        </aside>
+    </section>
+
+    <section>
+        <h3>Theme system</h3>
+
+        <h4 class="fragment highlight-blue">Moderate changes</h4>
+
+        <ul>
+            <li>Twig!</li>
+            <li style="position:relative">
+                <span class="fragment fade-out" style="position:absolute">
+                templatename.tpl.php</span>
+                <span class="fragment fade-in" style="position:absolute;color:green">templatename.html.twig</span>
+            </li>
+            <li class="fragment">hook_theme() - same</li>
+            <li class="fragment">hook_preprocess() - same</li>
+            <li class="fragment">hook_preprocess_HOOK() - same()</li>
+            <li class="fragment">Attaching assets</li>
+            <li class="fragment">
+                <span class="fragment fade-out" style="position:absolute">
+                drupal_add_js('module.js')</span>
+                <span class="fragment fade-in" style="position:absolute;color:green">
+                $form['#attached']['js'][] = 'module.js';</span>
+            </li>
+            <li class="fragment">drupal_render() is still here</li>
+        </ul>
+
+        <aside class="notes">
+            <p>Let's start with an easy part. Twig may sound as completely new templating system,
+                but many concepts of theming are relevant</p>
+            <p>No more drupal_add_js() and drupal_add_css()</p>
+            <p>#attached property was introduced in Drupal 7, and has become the only way of adding assets in D8</p>
+            <p>render arrays are there too, but improved in many ways, most notably #cache property</p>
+        </aside>
+    </section>
+
+    <section>
+        <h3>Global variables</h3>
+
+        <h4 class="fragment highlight-red">Completely changed</h4>
+
+        <pre><code class="hljs php">
+$user = \Drupal::currentUser();
+$language = \Drupal::languageManager()->getCurrentLanguage();
+$language_default = \Drupal::languageManager()->getDefaultLanguage();
+        </code></pre>
+
+        <aside class="notes"></aside>
+    </section>
 
 </div>
 
