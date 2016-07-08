@@ -107,6 +107,9 @@
             <p>
   There are too many topics that were changed in Drupal to cover in one session, so I will
   skip completely new topics, and topics that you should know well from Drupal
+
+  Skipped topics are marked in grey
+
   Configuration management: simple (static) configuration - vaguely refer to variables in D7,
     configuration entities: work with Entity API
 
@@ -175,10 +178,11 @@
             <li class="fragment">Pluggable everything</li>
         </ul>
         <aside class="notes">
-          <p>Many global functions are now static functions of \Drupal class</p>
+          <p>Many global functions are now static methods of \Drupal class</p>
           <p>Concept of hooks as universal discovery mechanism is gradually replaced by different patterns,
             depending on type of objects being discovered</p>
-          <p>Hooks are using mostly for altering, because alternatives are resource-hungry </p>
+          <p>Hooks are using mostly for altering, because alternatives are resource-hungry, and there is no
+          consensus on what pattern to use</p>
           <p>Entity API from contrib entity module is now part of the core, and got steroids. Entity metadata is stored in YML files instead of hook_entity_info()</p>
           <p>Plugins are used when we need to extend known type of functionality, i.e. cache plugins, block plugins, field type plugins</p>
           <p>Services are used to expose pluggable *new* type of functionality</p>
